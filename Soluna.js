@@ -1,5 +1,5 @@
-var initial_table = [6, 3, 2, 1];
-//var initial_table = [2, 1, 1, 1];
+//var initial_table = [6, 3, 2, 1];
+var initial_table = [6, 1, 1, 1];
 
 var table = [];
 var symbols = "ABCDE";
@@ -64,44 +64,48 @@ function mergeStacks(t, x, y) {
     return result;
 }
 
-function listPossibleMoves(t, l = 0, f = 0) {
+function listPossibleMoves(t, l = 0) {
 
-    if (l > 5){return [];}
+    //if (l > 5){return [];}
+    //console.log(l);
 
     let result = [];
 
-    if (f + 1 < t.length) {
+    if (t.length > 1) {
 
-        let i = f + 1;
-        for (i = f + 1; i < t.length; i++) {
-            if (canBeMerged(t[f], t[i])) {
+        let i = 0;
+        let j = 0;
+        for (i = 0; i < t.length; i++) {
+            for (j = i + 1; j < t.length; j++) {
+                if (canBeMerged(t[i], t[j])) {
 
-                let mt = mergeStacks(t, f, i);
+                    let mt = mergeStacks(t, i, j);
 
-                if (isMovePossible(mt)) {
-                    listPossibleMoves(mt, l + 1).forEach(element => result.push([[f, i]].concat(element)));
-                    if (l > 15) {
-                        console.log("intermediate results:");
-                        console.log(result);
+                    if (isMovePossible(mt)) {
+                        listPossibleMoves(mt, l + 1).forEach(element => result.push([[i, j]].concat(element)));
+                        if (l == 0) {
+                            console.log("intermediate results:");
+                            console.log(result);
+                        }
+                    } else {
+                        result.push([[i, j]]);
                     }
-                } else {
-                    result.push([[f, i]]);
+
+
+                    //check the reverse direction only if the symols are different:
+                    if (t[i].icon != t[j].icon) {
+                        let mtr = mergeStacks(t, j, i);
+
+                        if (isMovePossible(mtr)) {
+                            listPossibleMoves(mtr, l + 1).forEach(element => result.push([[j, i]].concat(element)));
+                        } else {
+                            result.push([[j, i]]);
+                        }
+                    }
+
                 }
-
-
-                let mtr = mergeStacks(t, i, f);
-
-                if (isMovePossible(mtr)) {
-                    listPossibleMoves(mtr, l + 1).forEach(element => result.push([[i, f]].concat(element)));
-                } else {
-                    result.push([[i, f]]);
-                }
-
             }
         }
-
-        result = result.concat(listPossibleMoves(t, l, f + 1));
-
     }
 
     return result;
