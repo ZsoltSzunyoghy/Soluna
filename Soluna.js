@@ -1,6 +1,6 @@
 //var initial_table = [6, 3, 2, 1];
+var initial_table = [2, 1, 1, 1];
 
-initial_table = [1, 1, 1, 1];
 var table = [];
 var symbols = "ABCDE";
 
@@ -10,6 +10,14 @@ for (i = 0; i < initial_table.length; i++) {
         table.push({ icon: symbols[i], number: 1 });
     }
 }
+
+table = [
+    { icon: 'A', number: 1 },
+    { icon: 'A', number: 1 },
+    { icon: 'B', number: 3 },
+    { icon: 'C', number: 2 },
+    { icon: 'D', number: 1 }
+  ];
 
 
 function canBeMerged(a, b) {
