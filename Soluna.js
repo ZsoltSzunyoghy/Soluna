@@ -64,7 +64,9 @@ function mergeStacks(t, x, y) {
     return result;
 }
 
-function listPossibleMoves(t, f = 0) {
+function listPossibleMoves(t, l = 0, f = 0) {
+
+    if (l > 5){return [];}
 
     let result = [];
 
@@ -77,7 +79,11 @@ function listPossibleMoves(t, f = 0) {
                 let mt = mergeStacks(t, f, i);
 
                 if (isMovePossible(mt)) {
-                    listPossibleMoves(mt).forEach(element => result.push([[f, i]].concat(element)));
+                    listPossibleMoves(mt, l + 1).forEach(element => result.push([[f, i]].concat(element)));
+                    if (l > 15) {
+                        console.log("intermediate results:");
+                        console.log(result);
+                    }
                 } else {
                     result.push([[f, i]]);
                 }
@@ -86,7 +92,7 @@ function listPossibleMoves(t, f = 0) {
                 let mtr = mergeStacks(t, i, f);
 
                 if (isMovePossible(mtr)) {
-                    listPossibleMoves(mtr).forEach(element => result.push([[i, f]].concat(element)));
+                    listPossibleMoves(mtr, l + 1).forEach(element => result.push([[i, f]].concat(element)));
                 } else {
                     result.push([[i, f]]);
                 }
@@ -94,7 +100,7 @@ function listPossibleMoves(t, f = 0) {
             }
         }
 
-        result = result.concat(listPossibleMoves(t, f + 1));
+        result = result.concat(listPossibleMoves(t, l, f + 1));
 
     }
 
