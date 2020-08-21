@@ -2,8 +2,6 @@
 
 initial_table = [1, 1, 1, 1];
 var table = [];
-//var table = [{ icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }, { icon: "A", number: 1 }];
-
 var symbols = "ABCDE";
 
 var i, j;
@@ -48,19 +46,13 @@ function isMovePossible(t) {
 function mergeStacks(t, x, y) {
     let result = [];
 
-    //console.log("processing ");
-    //console.log(t);
-
     let i = 0;
     for (i = 0; i < t.length; i++) {
         if (i == x) {
-            //console.log(`skipping ${i} ${x}`);
 
         } else if (i == y) {
-            //console.log(`merging  ${x} ${y}, ${t[x].icon} ${t[y].icon}`);
             result.push({ icon: t[x].icon, number: t[x].number + t[y].number });
         } else {
-            //console.log(`bypassing ${i}`);
             result.push(t[i]);
         }
     }
@@ -69,9 +61,6 @@ function mergeStacks(t, x, y) {
 }
 
 function listPossibleMoves(t, f = 0) {
-
-    console.log(`listPossibleMoves: ${f}`);
-    console.log(t);
 
     let result = [];
 
@@ -93,24 +82,11 @@ function listPossibleMoves(t, f = 0) {
 
             }
         }
-
         
-        console.log("Result before concat:");
-        console.log(result);
         result = result.concat(listPossibleMoves(t, f + 1));
-
-        console.log("Result after concat:");
-        console.log(result);
-
-
-
-
-
 
     }    
 
-    console.log("result is: ");
-    console.log(result);
     return result;
 }
 
