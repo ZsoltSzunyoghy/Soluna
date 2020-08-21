@@ -73,7 +73,7 @@ function listPossibleMoves(t, f = 0) {
     console.log(`listPossibleMoves: ${f}`);
     console.log(t);
 
-    result = [];
+    let result = [];
 
     if (f + 1 < t.length) {        
 
@@ -93,7 +93,19 @@ function listPossibleMoves(t, f = 0) {
 
             }
         }
+
+        
+        console.log("Result before concat:");
+        console.log(result);
         result = result.concat(listPossibleMoves(t, f + 1));
+
+        console.log("Result after concat:");
+        console.log(result);
+
+
+
+
+
 
     }    
 
