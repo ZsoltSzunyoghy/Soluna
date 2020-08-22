@@ -1,5 +1,5 @@
 var initial_table = [6, 3, 2, 1];
-//var initial_table = [6, 2, 1, 1];
+var initial_table = [3, 1, 1,1 ];
 
 var table = [];
 var symbols = "ABCDE";
@@ -22,6 +22,9 @@ table = [
     { icon: 'C', number: 2 },
     { icon: 'C', number: 1 }
   ];
+
+var steps = [];
+var tables = [];
 
 
 function canBeMerged(a, b) {
@@ -68,6 +71,29 @@ function mergeStacks(t, x, y) {
     return result;
 }
 
+function unmergeStacks() {
+    table = tables.pop();
+    steps.pop();
+    return table;
+}
+
+var previousSteps = [];
+var previousLens = [];
+
+function showNewResult(l, s) {
+    let i;
+    for (i = 0; i < previousSteps.length; i++) {
+        if ((l == previousLens[i]) && (s == previousSteps[i])) {
+            return;
+        }
+    }
+    console.log(`${l} steps from ${s}`);
+    previousSteps.push(s);
+    previousLens.push(l);
+
+
+}
+
 function listPossibleMoves(t, l = 0) {
 
     //if (l > 5){return [];}
@@ -86,13 +112,14 @@ function listPossibleMoves(t, l = 0) {
                     let mt = mergeStacks(t, i, j);
 
                     if (isMovePossible(mt)) {
-                        listPossibleMoves(mt, l + 1).forEach(element => result.push([[i, j]].concat(element)));
-                        // if (l == 0) {
-                        //     console.log("intermediate results:");
-                        //     console.log(result);
-                        // }
+                        tables.push(t);
+                        steps.push([i, j]);
+                        listPossibleMoves(mt, l + 1);//.forEach(element => result.push([[i, j]].concat(element)));
+                        t = unmergeStacks();
                     } else {
-                        result.push([[i, j]]);
+                        //show steps:
+                        // console.log(steps.concat([[i,j]]));                          
+                        showNewResult(steps.length + 1, steps.concat([[i, j]])[0]);
                     }
 
 
@@ -101,9 +128,14 @@ function listPossibleMoves(t, l = 0) {
                         let mtr = mergeStacks(t, j, i);
 
                         if (isMovePossible(mtr)) {
-                            listPossibleMoves(mtr, l + 1).forEach(element => result.push([[j, i]].concat(element)));
+                            tables.push(t);
+                            steps.push([j, i]);
+                            listPossibleMoves(mtr, l + 1);//.forEach(element => result.push([[j, i]].concat(element)));
+                            t = unmergeStacks();
                         } else {
-                            result.push([[j, i]]);
+                            //show steps:
+                            // console.log(steps.concat([[j,i]]));
+                            showNewResult(steps.length + 1, steps.concat([[j, i]])[0]);
                         }
                     }
 
@@ -119,8 +151,23 @@ function listPossibleMoves(t, l = 0) {
 console.log(table);
 
 let res = listPossibleMoves(table);
-console.log("Resulting moves:");
-console.log(res);
+// console.log("Resulting moves:");
+// console.log(res);
 
-let lens = res.map(e => e.length);
-console.log(lens);
+// let lens = res.map(e => e.length);
+// console.log(lens);
+
+// console.log("unique result:");
+
+// var i,j,skip;
+// for(i=0;i<previousSteps.length;i++){
+//     skip = false;
+//     for(j=i+1;j<previousSteps.length;j++){
+//         if(previousSteps[i] == previousSteps[j]){
+//             skip = true;
+//         }
+//     }
+//     if(!skip){
+//         console.log(`${previousLens[i]} steps from ${previousSteps[i]}`);
+//     }
+// }
