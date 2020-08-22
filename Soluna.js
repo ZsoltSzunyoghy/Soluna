@@ -1,5 +1,5 @@
-//var initial_table = [6, 3, 2, 1];
-var initial_table = [6, 1, 1, 1];
+var initial_table = [6, 3, 2, 1];
+//var initial_table = [6, 2, 1, 1];
 
 var table = [];
 var symbols = "ABCDE";
@@ -11,13 +11,17 @@ for (i = 0; i < initial_table.length; i++) {
     }
 }
 
-// table = [
-//     { icon: 'A', number: 1 },
-//     { icon: 'A', number: 1 },
-//     { icon: 'B', number: 3 },
-//     { icon: 'C', number: 2 },
-//     { icon: 'D', number: 1 }
-//   ];
+table = [
+    { icon: 'A', number: 2 },
+    { icon: 'A', number: 1 },
+    { icon: 'A', number: 1 },
+    { icon: 'A', number: 1 },
+    { icon: 'A', number: 1 },
+    { icon: 'B', number: 2 },
+    { icon: 'B', number: 1 },
+    { icon: 'C', number: 2 },
+    { icon: 'C', number: 1 }
+  ];
 
 
 function canBeMerged(a, b) {
@@ -83,10 +87,10 @@ function listPossibleMoves(t, l = 0) {
 
                     if (isMovePossible(mt)) {
                         listPossibleMoves(mt, l + 1).forEach(element => result.push([[i, j]].concat(element)));
-                        if (l == 0) {
-                            console.log("intermediate results:");
-                            console.log(result);
-                        }
+                        // if (l == 0) {
+                        //     console.log("intermediate results:");
+                        //     console.log(result);
+                        // }
                     } else {
                         result.push([[i, j]]);
                     }
