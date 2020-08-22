@@ -1,5 +1,5 @@
 var initial_table = [6, 3, 2, 1];
-var initial_table = [3, 1, 1,1 ];
+var initial_table = [2, 2];
 
 var table = [];
 var symbols = "ABCDE";
@@ -11,17 +11,16 @@ for (i = 0; i < initial_table.length; i++) {
     }
 }
 
-table = [
-    { icon: 'A', number: 2 },
-    { icon: 'A', number: 1 },
-    { icon: 'A', number: 1 },
-    { icon: 'A', number: 1 },
-    { icon: 'A', number: 1 },
-    { icon: 'B', number: 2 },
-    { icon: 'B', number: 1 },
-    { icon: 'C', number: 2 },
-    { icon: 'C', number: 1 }
-  ];
+// table = [
+//     { icon: 'A', number: 3 },
+//     { icon: 'A', number: 1 },
+//     { icon: 'A', number: 1 },
+//     { icon: 'A', number: 1 },
+//     { icon: 'B', number: 2 },
+//     { icon: 'B', number: 1 },
+//     { icon: 'C', number: 2 },
+//     { icon: 'C', number: 1 }
+//   ];
 
 var steps = [];
 var tables = [];
@@ -157,17 +156,26 @@ let res = listPossibleMoves(table);
 // let lens = res.map(e => e.length);
 // console.log(lens);
 
-// console.log("unique result:");
 
-// var i,j,skip;
-// for(i=0;i<previousSteps.length;i++){
-//     skip = false;
-//     for(j=i+1;j<previousSteps.length;j++){
-//         if(previousSteps[i] == previousSteps[j]){
-//             skip = true;
-//         }
-//     }
-//     if(!skip){
-//         console.log(`${previousLens[i]} steps from ${previousSteps[i]}`);
-//     }
-// }
+console.log("result with only one outcome:");
+
+var i = 0, j = 1, skip = false;
+while (i < previousSteps.length) {
+
+    //skip = false;
+
+    j = i + 1;
+    while ((j < previousSteps.length) && (previousSteps[i] == previousSteps[j])) {
+        j++;
+    }
+
+    if (j - i > 1) {
+        // previousSteps.slice(i, j);
+        // previousLens.slice(i, j);
+        i = j;
+    } else {
+        console.log(`${previousLens[i]} steps from ${previousSteps[i]}`);
+        i++;
+    }
+}
+
