@@ -1,5 +1,4 @@
 var initial_table = [6, 3, 2, 1];
-var initial_table = [2, 2];
 
 var table = [];
 var symbols = "ABCDE";
@@ -11,20 +10,22 @@ for (i = 0; i < initial_table.length; i++) {
     }
 }
 
-// table = [
-//     { icon: 'A', number: 3 },
-//     { icon: 'A', number: 1 },
-//     { icon: 'A', number: 1 },
-//     { icon: 'A', number: 1 },
-//     { icon: 'B', number: 2 },
-//     { icon: 'B', number: 1 },
-//     { icon: 'C', number: 2 },
-//     { icon: 'C', number: 1 }
-//   ];
+// situation with a solution:
+table = [
+    { icon: 'A', number: 1 },
+    { icon: 'A', number: 1 },
+    { icon: 'A', number: 1 },
+    { icon: 'B', number: 1 },
+    { icon: 'B', number: 1 },
+    { icon: 'B', number: 1 },
+    { icon: 'C', number: 2 },
+    { icon: 'C', number: 1 },
+    { icon: 'C', number: 1 },
+    { icon: 'C', number: 1 },
+    { icon: 'C', number: 1 }
+];
 
-var steps = [];
 var tables = [];
-
 
 function canBeMerged(a, b) {
     if (a.icon == b.icon) {
@@ -67,115 +68,94 @@ function mergeStacks(t, x, y) {
         }
     }
 
+    //preserve previous state for unmerge action:
+    tables.push(t);
+
     return result;
 }
 
 function unmergeStacks() {
     table = tables.pop();
-    steps.pop();
     return table;
 }
 
-var previousSteps = [];
-var previousLens = [];
+// when it is my turn:
+// I can win if there is one move which makes me win
+function canIWinInThisSituation(t, l = 0) {
 
-function showNewResult(l, s) {
-    let i;
-    for (i = 0; i < previousSteps.length; i++) {
-        if ((l == previousLens[i]) && (s == previousSteps[i])) {
-            return;
-        }
+    if (!isMovePossible(t)) {
+        return [];
     }
-    console.log(`${l} steps from ${s}`);
-    previousSteps.push(s);
-    previousLens.push(l);
 
+    let i = 0, j = 0;
+    for (i = 0; i < t.length; i++) {
+        for (j = i + 1; j < t.length; j++) {
+            if (canBeMerged(t[i], t[j])) {
 
-}
-
-function listPossibleMoves(t, l = 0) {
-
-    //if (l > 5){return [];}
-    //console.log(l);
-
-    let result = [];
-
-    if (t.length > 1) {
-
-        let i = 0;
-        let j = 0;
-        for (i = 0; i < t.length; i++) {
-            for (j = i + 1; j < t.length; j++) {
-                if (canBeMerged(t[i], t[j])) {
-
-                    let mt = mergeStacks(t, i, j);
-
-                    if (isMovePossible(mt)) {
-                        tables.push(t);
-                        steps.push([i, j]);
-                        listPossibleMoves(mt, l + 1);//.forEach(element => result.push([[i, j]].concat(element)));
-                        t = unmergeStacks();
-                    } else {
-                        //show steps:
-                        // console.log(steps.concat([[i,j]]));                          
-                        showNewResult(steps.length + 1, steps.concat([[i, j]])[0]);
-                    }
-
-
-                    //check the reverse direction only if the symols are different:
-                    if (t[i].icon != t[j].icon) {
-                        let mtr = mergeStacks(t, j, i);
-
-                        if (isMovePossible(mtr)) {
-                            tables.push(t);
-                            steps.push([j, i]);
-                            listPossibleMoves(mtr, l + 1);//.forEach(element => result.push([[j, i]].concat(element)));
-                            t = unmergeStacks();
-                        } else {
-                            //show steps:
-                            // console.log(steps.concat([[j,i]]));
-                            showNewResult(steps.length + 1, steps.concat([[j, i]])[0]);
-                        }
-                    }
-
+                let mt = mergeStacks(t, i, j);
+                if (canIWinWithThisMove(mt, l + 1)) {
+                    t = unmergeStacks();
+                    return [i, j];
                 }
+                t = unmergeStacks();
+
+
+                //check the reverse direction only if the symols are different:
+                if (t[i].icon != t[j].icon) {
+                    let mtr = mergeStacks(t, j, i);
+                    if (canIWinWithThisMove(mtr, l + 1)) {
+                        t = unmergeStacks();
+                        return [j, i];
+                    }
+                    t = unmergeStacks();
+                }
+
             }
         }
     }
 
-    return result;
+    return [];
 }
 
+// when it is the opponents turn
+// I can win if all the moves of the opponent fail
+// Consequently if there is a move for my opponent which leads to a situation I cannot win, I cannot win with this move
+function canIWinWithThisMove(t, l = 0) {
+
+    if (!isMovePossible(t)) {
+        return true;
+    }
+
+    let i = 0, j = 0;
+    for (i = 0; i < t.length; i++) {
+        for (j = i + 1; j < t.length; j++) {
+            if (canBeMerged(t[i], t[j])) {
+
+                let mt = mergeStacks(t, i, j);
+                if (canIWinInThisSituation(mt, l + 1).length == 0) {
+                    t = unmergeStacks();
+                    return false;
+                }
+                t = unmergeStacks();
+
+
+                //check the reverse direction only if the symols are different:
+                if (t[i].icon != t[j].icon) {
+                    let mtr = mergeStacks(t, j, i);
+                    if (canIWinInThisSituation(mtr, l + 1).length == 0) {
+                        t = unmergeStacks();
+                        return false;
+                    }
+                    t = unmergeStacks();
+                }
+
+            }
+        }
+    }
+
+    return true;
+}
 
 console.log(table);
-
-let res = listPossibleMoves(table);
-// console.log("Resulting moves:");
-// console.log(res);
-
-// let lens = res.map(e => e.length);
-// console.log(lens);
-
-
-console.log("result with only one outcome:");
-
-var i = 0, j = 1, skip = false;
-while (i < previousSteps.length) {
-
-    //skip = false;
-
-    j = i + 1;
-    while ((j < previousSteps.length) && (previousSteps[i] == previousSteps[j])) {
-        j++;
-    }
-
-    if (j - i > 1) {
-        // previousSteps.slice(i, j);
-        // previousLens.slice(i, j);
-        i = j;
-    } else {
-        console.log(`${previousLens[i]} steps from ${previousSteps[i]}`);
-        i++;
-    }
-}
-
+console.log("The winning move is:");
+console.log(canIWinInThisSituation(table));
