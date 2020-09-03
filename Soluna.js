@@ -1,28 +1,51 @@
-var initial_table = [6, 3, 2, 1];
+var initial_table = [4, 3, 3, 2];
 
 var table = [];
 var symbols = "ABCDE";
 
-var i, j;
-for (i = 0; i < initial_table.length; i++) {
-    for (j = 0; j < initial_table[i]; j++) {
-        table.push({ icon: symbols[i], number: 1 });
+var ii, jj;
+for (ii = 0; ii < initial_table.length; ii++) {
+    for (jj = 0; jj < initial_table[ii]; jj++) {
+        table.push({ icon: symbols[ii], number: 1 });
     }
 }
 
 // situation with a solution:
+// table = [
+//     { icon: 'A', number: 1 },
+//     { icon: 'A', number: 1 },
+//     { icon: 'A', number: 1 },
+//     { icon: 'B', number: 1 },
+//     { icon: 'B', number: 1 },
+//     { icon: 'B', number: 1 },
+//     { icon: 'C', number: 2 },
+//     { icon: 'C', number: 1 },
+//     { icon: 'C', number: 1 },
+//     { icon: 'C', number: 1 },
+//     { icon: 'C', number: 1 }
+// ];
+
+// current situation:
+// table = [
+//     { icon: 'A', number: 4 },
+//     { icon: 'B', number: 2 },
+//     { icon: 'C', number: 1 },
+//     { icon: 'C', number: 1 },
+//     { icon: 'C', number: 1 },
+//     { icon: 'D', number: 2 },
+//     { icon: 'D', number: 1 }
+// ];
+
 table = [
-    { icon: 'A', number: 1 },
-    { icon: 'A', number: 1 },
+    { icon: 'A', number: 2 },
+    { icon: 'A', number: 2 },
     { icon: 'A', number: 1 },
     { icon: 'B', number: 1 },
     { icon: 'B', number: 1 },
-    { icon: 'B', number: 1 },
-    { icon: 'C', number: 2 },
     { icon: 'C', number: 1 },
     { icon: 'C', number: 1 },
     { icon: 'C', number: 1 },
-    { icon: 'C', number: 1 }
+    { icon: 'D', number: 2 }
 ];
 
 var tables = [];
@@ -159,3 +182,37 @@ function canIWinWithThisMove(t, l = 0) {
 console.log(table);
 console.log("The winning move is:");
 console.log(canIWinInThisSituation(table));
+
+
+console.log("Losing moves:");
+let t = table;
+let i = 0, j = 0;
+for (i = 0; i < t.length; i++) {
+    for (j = i + 1; j < t.length; j++) {
+        if (canBeMerged(t[i], t[j])) {
+
+            let mt = mergeStacks(t, i, j);
+            if (canIWinInThisSituation(mt).length > 0) {
+                t = unmergeStacks();
+                console.log(i + ", " + j);
+            } else {
+                t = unmergeStacks();
+                console.log(`NOT a losing move: ${i}, ${j}`);
+            }
+
+
+            //check the reverse direction only if the symols are different:
+            if (t[i].icon != t[j].icon) {
+                let mtr = mergeStacks(t, j, i);
+                if (canIWinInThisSituation(mtr).length > 0) {
+                    t = unmergeStacks();
+                    console.log(j + ", " + i);
+                } else {
+                    t = unmergeStacks();
+                    console.log(`NOT a losing move: ${j}, ${i}`);
+                }
+            }
+
+        }
+    }
+}
